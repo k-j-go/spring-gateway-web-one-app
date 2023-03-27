@@ -5,6 +5,8 @@ import com.azunitech.search.usecases.impls.UserBZImpl;
 import com.github.javafaker.Artist;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +26,7 @@ public class UserController {
     UserBZImpl userBZ;
 
     @GetMapping("/get")
-    List<User> LoadUsers(@RequestHeader Map<String, String> headers, @RequestParam("myParam") String myParamValue  ) {
+    ResponseEntity<List<User>> LoadUsers(@RequestHeader Map<String, String> headers, @RequestParam("myParam") String myParamValue  ) {
         log.info("myParam: {}", myParamValue);
         headers.entrySet()
                 .forEach(x -> log.info("request: {} {}", x.getKey(), x.getValue()));
@@ -33,8 +35,10 @@ public class UserController {
                 .name("a")
                 .build());
 
-        return list.stream()
+        List<User> result = list.stream()
                 .map(x -> User.from(x))
                 .collect(Collectors.toList());
+
+        return new ResponseEntity<List<User>>(result, HttpStatus.OK);
     }
 }
