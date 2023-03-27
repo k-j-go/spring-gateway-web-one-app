@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({WebConfig.class, RepoConfig.class, RouteConfig.class})
 public class Wire {
+
     @Bean
     public Artist getFakerAddress(){
         return new Faker().artist();

@@ -21,6 +21,8 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.a
 @Configuration
 @Component
 public class RouteConfig {
+    public static String SESSION_ID = "SESSION_ID";
+
     @Autowired
     MyRewritePathGatewayFilterFactory myRewritePathGatewayFilterFactory;
 
@@ -48,6 +50,23 @@ public class RouteConfig {
                                     f.addRequestParameter("myParam", "myParam_value");
                                     f.addResponseHeader("response_header", "response_header_value");
                                     f.preserveHostHeader();
+                                    return f;
+                                }))
+                                .uri("http://0.0.0.0:8080"))
+                .route("localstack_get_path", r ->
+                        r.path("/getpath/{PATH}")
+                                .filters((f -> {
+//                                    f.filter(myRewritePathGatewayFilterFactory.apply(new MyRewritePathGatewayFilterFactory.Config()));
+                                    f.filter(myGatewayFilter);
+                                    //Register pre-gateway filter factory
+                                    f.filter(preGatewayFilterFactory.apply(new PreGatewayFilterFactory.Config()));
+                                    //Register post-gateway filter factory
+                                    f.filter(postGatewayFilterFactory.apply(new PostGatewayFilterFactory.Config()));
+                                    f.addRequestHeader("head_a", "head_a_value");
+                                    f.addRequestParameter("myParam", "myParam_value");
+                                    f.addResponseHeader("response_header", "response_header_value");
+                                    f.preserveHostHeader();
+                                    f.setPath("/get/{PATH}/{SESSION_ID}");
                                     return f;
                                 }))
                                 .uri("http://0.0.0.0:8080"))

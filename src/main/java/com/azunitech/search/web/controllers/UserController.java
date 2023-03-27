@@ -7,10 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,9 +22,14 @@ public class UserController {
     @Autowired
     UserBZImpl userBZ;
 
-    @GetMapping("/get")
-    ResponseEntity<List<User>> LoadUsers(@RequestHeader Map<String, String> headers, @RequestParam("myParam") String myParamValue  ) {
+    @GetMapping("/get/{path}/{session_id}")
+    ResponseEntity<List<User>> LoadUsers(@RequestHeader Map<String, String> headers,
+                                         @RequestParam("myParam") String myParamValue,
+                                         @PathVariable String path,
+                                         @PathVariable String session_id) {
         log.info("myParam: {}", myParamValue);
+        log.info("path: {}", path);
+        log.info("session_id: {}", session_id);
         headers.entrySet()
                 .forEach(x -> log.info("request: {} {}", x.getKey(), x.getValue()));
 
@@ -37,6 +39,11 @@ public class UserController {
 
         List<User> result = list.stream()
                 .map(x -> User.from(x))
+                .map(x -> {
+                            x.setName(session_id);
+                            return x;
+                        }
+                )
                 .collect(Collectors.toList());
 
         return new ResponseEntity<List<User>>(result, HttpStatus.OK);
