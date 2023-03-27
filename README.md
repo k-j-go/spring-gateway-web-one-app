@@ -4,6 +4,15 @@
 - [ref example](https://www.baeldung.com/spring-cloud-gateway-url-rewriting)
 - [ref](https://cloud.spring.io/spring-cloud-gateway/reference/html/#gateway-starter)
 - [dev guide](https://cloud.spring.io/spring-cloud-gateway/reference/html/#developer-guide)
+
+##### 
+```text
+For a global session_id as request path
+in the mygatewayFilter, we add a K/V to exchange, than call the 
+putUriTemplateVariables(exchange, Collections.singletonMap(SESSION_ID, session_id)); to add to the URL
+```
+
+
 #### Create project
 ```shell
 http -d https://start.spring.io/starter.zip type==maven-project \
