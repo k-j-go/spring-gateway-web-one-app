@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 public class MyGlobalFilter  implements GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+//        Map<String, String> uriVariables = ServerWebExchangeUtils.getPathPredicateVariables(exchange);
+//        String segment = uriVariables.get("segment");
         log.info("MyGlobalFilter executed");
         return chain.filter(exchange);
     }

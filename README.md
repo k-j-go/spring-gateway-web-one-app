@@ -2,6 +2,8 @@
 
 - [reference](https://spring.io/projects/spring-cloud-gateway)
 - [ref example](https://www.baeldung.com/spring-cloud-gateway-url-rewriting)
+- [ref](https://cloud.spring.io/spring-cloud-gateway/reference/html/#gateway-starter)
+- [dev guide](https://cloud.spring.io/spring-cloud-gateway/reference/html/#developer-guide)
 #### Create project
 ```shell
 http -d https://start.spring.io/starter.zip type==maven-project \

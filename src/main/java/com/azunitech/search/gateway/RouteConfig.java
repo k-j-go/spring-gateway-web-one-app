@@ -2,6 +2,8 @@ package com.azunitech.search.gateway;
 
 import com.azunitech.search.gateway.filters.MyGatewayFilter;
 import com.azunitech.search.gateway.filters.MyRewritePathGatewayFilterFactory;
+import com.azunitech.search.gateway.filters.PostGatewayFilterFactory;
+import com.azunitech.search.gateway.filters.PreGatewayFilterFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -25,6 +27,11 @@ public class RouteConfig {
     @Autowired
     MyGatewayFilter myGatewayFilter;
 
+    @Autowired
+    PreGatewayFilterFactory preGatewayFilterFactory;
+    @Autowired
+    PostGatewayFilterFactory postGatewayFilterFactory;
+
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
@@ -33,6 +40,10 @@ public class RouteConfig {
                                 .filters((f -> {
                                     f.filter(myRewritePathGatewayFilterFactory.apply(new MyRewritePathGatewayFilterFactory.Config()));
                                     f.filter(myGatewayFilter);
+                                    //Register pre-gateway filter factory
+                                    f.filter(preGatewayFilterFactory.apply(new PreGatewayFilterFactory.Config()));
+                                    //Register post-gateway filter factory
+                                    f.filter(postGatewayFilterFactory.apply(new PostGatewayFilterFactory.Config()));
                                     f.addRequestHeader("head_a", "head_a_value");
                                     f.addRequestParameter("myParam", "myParam_value");
                                     f.addResponseHeader("response_header", "response_header_value");
