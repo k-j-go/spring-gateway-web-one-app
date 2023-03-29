@@ -1,9 +1,6 @@
 package com.azunitech.search.gateway;
 
-import com.azunitech.search.gateway.filters.MyGatewayFilter;
-import com.azunitech.search.gateway.filters.MyRewritePathGatewayFilterFactory;
-import com.azunitech.search.gateway.filters.PostGatewayFilterFactory;
-import com.azunitech.search.gateway.filters.PreGatewayFilterFactory;
+import com.azunitech.search.gateway.filters.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -27,13 +24,15 @@ public class RouteConfig {
     MyRewritePathGatewayFilterFactory myRewritePathGatewayFilterFactory;
 
     @Autowired
-    MyGatewayFilter myGatewayFilter;
+    SessionIDGatewayFilter sessionIDGatewayFilter;
 
     @Autowired
     PreGatewayFilterFactory preGatewayFilterFactory;
     @Autowired
     PostGatewayFilterFactory postGatewayFilterFactory;
 
+    @Autowired
+    UrlTemplateGatewayFilter urlTemplateGatewayFilter;
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
@@ -41,7 +40,8 @@ public class RouteConfig {
                         r.path("/getlocal")
                                 .filters((f -> {
                                     f.filter(myRewritePathGatewayFilterFactory.apply(new MyRewritePathGatewayFilterFactory.Config()));
-                                    f.filter(myGatewayFilter);
+                                    f.filter(sessionIDGatewayFilter);
+                                    f.filter(urlTemplateGatewayFilter);
                                     //Register pre-gateway filter factory
                                     f.filter(preGatewayFilterFactory.apply(new PreGatewayFilterFactory.Config()));
                                     //Register post-gateway filter factory
@@ -57,7 +57,9 @@ public class RouteConfig {
                         r.path("/getpath/{PATH}")
                                 .filters((f -> {
 //                                    f.filter(myRewritePathGatewayFilterFactory.apply(new MyRewritePathGatewayFilterFactory.Config()));
-                                    f.filter(myGatewayFilter);
+                                    f.filter(sessionIDGatewayFilter);
+                                    f.filter(urlTemplateGatewayFilter);
+                                    f.filter(urlTemplateGatewayFilter);
                                     //Register pre-gateway filter factory
                                     f.filter(preGatewayFilterFactory.apply(new PreGatewayFilterFactory.Config()));
                                     //Register post-gateway filter factory

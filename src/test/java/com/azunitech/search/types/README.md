@@ -1,0 +1,1 @@
+#### interface can has class and class can have callback
